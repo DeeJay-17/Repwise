@@ -1,0 +1,61 @@
+name: deploy
+
+# Builds both service images and rolls the Azure container apps forward.
+# Runs only once infra/azure/setup-github-deploy.sh has set the AZURE_* variables.
+on:
+  push:
+    branches: [main]
+    paths: ["services/**"]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.AZURE_CLIENT_ID != ''
+    runs-on: ubuntu-latest
+    env:
+      RG: ${{ vars.AZURE_RESOURCE_GROUP }}
+      PREFIX: repwise
+    steps:
+      - uses: actions/checkout@v7
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - uses: docker/setup-buildx-action@v4
+      - name: Build and push images
+        run: |
+          REGISTRY="$(az acr list --resource-group "$RG" --query '[0].name' -o tsv)"
+          SERVER="$(az acr show --name "$REGISTRY" --query loginServer -o tsv)"
+          TAG="${GITHUB_SHA::7}"
+          az acr login --name "$REGISTRY"
+          for svc in core-api ai-service; do
+            docker buildx build --platform linux/amd64 --push \
+              --tag "$SERVER/$svc:$TAG" "services/$svc"
+          done
+          echo "SERVER=$SERVER" >> "$GITHUB_ENV"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+      - name: Roll out
+        run: |
+          az extension add --name containerapp --upgrade --yes --only-show-errors
+          for svc in core-api ai-service; do
+            az containerapp update --resource-group "$RG" --name "$PREFIX-$svc" \
+              --image "$SERVER/$svc:$TAG" --output none
+          done
+      - name: Health check
+        run: |
+          for svc in core-api ai-service; do
+            URL="https://$(az containerapp show -g "$RG" -n "$PREFIX-$svc" --query properties.configuration.ingress.fqdn -o tsv)"
+            for _ in $(seq 1 12); do
+              curl -fsS --max-time 30 "$URL/health" && echo " $svc ok" && break
+              sleep 10
+            done
+          done
