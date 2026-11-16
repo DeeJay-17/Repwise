@@ -2,10 +2,10 @@ name: core-api
 
 on:
   pull_request:
-    paths: ["services/core-api/**", ".github/workflows/core-api.yml", ".github/workflows/_python-service.yml"]
+    paths: ["services/core-api/**", "packages/contracts/**", ".github/workflows/core-api.yml", ".github/workflows/_python-service.yml"]
   push:
     branches: [main]
-    paths: ["services/core-api/**", ".github/workflows/core-api.yml", ".github/workflows/_python-service.yml"]
+    paths: ["services/core-api/**", "packages/contracts/**", ".github/workflows/core-api.yml", ".github/workflows/_python-service.yml"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,3 +16,34 @@ jobs:
     uses: ./.github/workflows/_python-service.yml
     with:
       path: services/core-api
+
+  # The same tests against a real Postgres, as in production.
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: repwise
+          POSTGRES_PASSWORD: repwise
+          POSTGRES_DB: repwise_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U repwise"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: services/core-api
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: services/core-api/uv.lock
+      - run: uv sync --frozen
+      - name: Tests against Postgres
+        env:
+          TEST_DATABASE_URL: postgresql+psycopg://repwise:repwise@localhost:5432/repwise_test
+        run: uv run pytest

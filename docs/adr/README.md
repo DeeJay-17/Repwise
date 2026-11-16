@@ -12,5 +12,6 @@
 | [0008](0008-bundled-exercise-catalogue.md) | Bundle a curated catalogue from free-exercise-db |
 | [0009](0009-drizzle-local-database.md) | Drizzle ORM on expo-sqlite for local data |
 | [0010](0010-plan-generation-workflow.md) | Plan generation: the model proposes, code checks, a rule-based plan backs it up |
+| [0011](0011-sync.md) | Sync: whole rows, newest edit wins, server-ordered changes |
 
 New record: copy `0000-template.md` to the next number.

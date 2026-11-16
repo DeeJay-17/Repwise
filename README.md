@@ -2,7 +2,7 @@
 
 A mobile app that drafts a workout plan from your goals, schedule and the equipment you actually have (nothing, a treadmill, a home gym or a full gym), then tracks your workouts. Use it as a guest with data on your phone, or sign in with Google to sync across devices. AI generation uses your own OpenAI, Google or Anthropic API key; without one, Repwise works as a manual tracker.
 
-> Status: Phase 3 (AI generation). Offline tracking plus AI plan generation and regeneration with the user's own OpenAI, Google or Anthropic key. Accounts and sync arrive in Phase 4.
+> Status: Phase 4 (accounts and sync). Guest mode, Google sign-in with cross-device sync, calendar-style workout tracking, and AI plans with your own OpenAI, Google or Anthropic key. Deployment to Azure is Phase 5. Setup for sign-in: [docs/setup-accounts.md](docs/setup-accounts.md).
 
 ## Layout
 
