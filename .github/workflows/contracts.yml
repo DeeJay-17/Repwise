@@ -1,0 +1,19 @@
+name: contracts
+
+on:
+  pull_request:
+    paths: ["packages/contracts/**", ".github/workflows/contracts.yml"]
+  push:
+    branches: [main]
+    paths: ["packages/contracts/**", ".github/workflows/contracts.yml"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - name: Schema is valid JSON Schema
+        run: uvx check-jsonschema --check-metaschema packages/contracts/plan.schema.json
+      - name: Examples match the schema
+        run: uvx check-jsonschema --schemafile packages/contracts/plan.schema.json packages/contracts/examples/plan.*.json

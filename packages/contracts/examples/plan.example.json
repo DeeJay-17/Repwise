@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "id": "3f6c1a2e-8b4d-4c1e-9a7f-2d5b6e8c9a01",
+  "name": "3-day full body, treadmill and bodyweight",
+  "source": "ai",
+  "goal": "general_fitness",
+  "daysPerWeek": 3,
+  "sessionMinutes": 45,
+  "focusMuscles": [],
+  "days": [
+    {
+      "dayIndex": 1,
+      "name": "Full body A",
+      "exercises": [
+        { "exerciseId": "treadmill_incline_walk", "order": 1, "sets": 1, "target": { "kind": "time", "seconds": 600 }, "restSeconds": 60 },
+        { "exerciseId": "bodyweight_squat", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 12, "maxReps": 15 }, "restSeconds": 60 },
+        { "exerciseId": "push_up", "order": 3, "sets": 3, "target": { "kind": "reps", "minReps": 8, "maxReps": 12 }, "restSeconds": 60 },
+        { "exerciseId": "plank", "order": 4, "sets": 3, "target": { "kind": "time", "seconds": 30 }, "restSeconds": 45 }
+      ]
+    },
+    {
+      "dayIndex": 2,
+      "name": "Full body B",
+      "exercises": [
+        { "exerciseId": "treadmill_intervals", "order": 1, "sets": 6, "target": { "kind": "time", "seconds": 60 }, "restSeconds": 60 },
+        { "exerciseId": "reverse_lunge", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 10, "maxReps": 12 }, "restSeconds": 60 },
+        { "exerciseId": "glute_bridge", "order": 3, "sets": 3, "target": { "kind": "reps", "minReps": 12, "maxReps": 15 }, "restSeconds": 45 }
+      ]
+    },
+    {
+      "dayIndex": 3,
+      "name": "Full body C",
+      "exercises": [
+        { "exerciseId": "treadmill_incline_walk", "order": 1, "sets": 1, "target": { "kind": "time", "seconds": 900 }, "restSeconds": 60 },
+        { "exerciseId": "pike_push_up", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 6, "maxReps": 10 }, "restSeconds": 75 },
+        { "exerciseId": "dead_bug", "order": 3, "sets": 3, "target": { "kind": "reps", "minReps": 10, "maxReps": 12 }, "restSeconds": 45 }
+      ]
+    }
+  ],
+  "createdAt": "2026-11-16T07:30:00Z"
+}
