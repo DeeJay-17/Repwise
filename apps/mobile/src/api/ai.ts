@@ -11,15 +11,22 @@ export type GenerateResult =
 
 const TIMEOUT_MS = 120_000;
 
+const AI_SERVICE_PORT = 8002;
+
 /**
- * Base URL of the AI service. EXPO_PUBLIC_AI_SERVICE_URL wins; otherwise app.json
- * extra.aiServiceUrl, whose default reaches a service on your computer from the
- * Android emulator.
+ * Base URL of the AI service, in this order:
+ * 1. EXPO_PUBLIC_AI_SERVICE_URL, if set.
+ * 2. The computer the dev server runs on (only set in development builds and Expo Go),
+ *    on port 8002. This works on a real phone over Wi-Fi with no configuration.
+ * 3. app.json `extra.aiServiceUrl` (the deployed service, once there is one).
  */
 export function aiServiceUrl(): string {
   const fromEnv = process.env.EXPO_PUBLIC_AI_SERVICE_URL;
+  if (fromEnv) return fromEnv.replace(/\/$/, '');
+  const devHost = Constants.expoConfig?.hostUri?.split(':')[0];
+  if (devHost) return `http://${devHost}:${AI_SERVICE_PORT}`;
   const fromConfig = Constants.expoConfig?.extra?.aiServiceUrl as string | undefined;
-  return (fromEnv || fromConfig || 'http://10.0.2.2:8002').replace(/\/$/, '');
+  return (fromConfig || `http://10.0.2.2:${AI_SERVICE_PORT}`).replace(/\/$/, '');
 }
 
 const FRIENDLY: Record<string, string> = {

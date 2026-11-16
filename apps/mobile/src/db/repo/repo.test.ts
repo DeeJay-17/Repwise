@@ -27,6 +27,7 @@ import {
   lastPerformance,
   listFinishedSessions,
   nextPlanDay,
+  setSessionDate,
   startSession,
   updateSet,
 } from './sessions';
@@ -176,11 +177,15 @@ describe('workouts', () => {
 
     expect(getSessionDetail(db, first)!.exercises[1]!.sets).toHaveLength(4);
     const [summary] = listFinishedSessions(db);
-    expect(summary).toMatchObject({ id: first, completedSets: 4, volumeKg: 240 });
+    expect(summary).toMatchObject({ id: first, dayIndex: 1, completedSets: 4, volumeKg: 240 });
+    expect(getSessionDetail(db, first)!.exercises[0]!.sets[0]!.targetRestSeconds).toBe(90);
 
     const second = startSession(db, days[0]!.id, '2026-11-12T10:00:00Z');
     expect(getInProgressSession(db)!.id).toBe(second);
-    expect(lastPerformance(db, 'bodyweight_squat', second).map((s) => s.weightKg)).toEqual([20]);
+    const last = lastPerformance(db, 'bodyweight_squat', second)!;
+    expect(last.sets.map((s) => s.weightKg)).toEqual([20]);
+    expect(last.startedAt).toBe('2026-11-10T10:00:00Z');
+    expect(lastPerformance(db, 'plank')).toBeUndefined();
 
     discardSession(db, second);
     expect(getInProgressSession(db)).toBeUndefined();
@@ -263,5 +268,19 @@ describe('importing a plan document', () => {
       [2, 'plank', 'time'],
     ]);
     expect(tree.days[1]!.exercises[0]).toMatchObject({ seconds: 900, restSeconds: 0 });
+  });
+});
+
+describe('editing a workout date', () => {
+  it('moves the workout to another day and keeps its duration', () => {
+    const db = createTestDb();
+    const { days } = planWithExercises(db);
+    const id = startSession(db, days[0]!.id, new Date(2026, 10, 16, 18, 0).toISOString());
+    finishSession(db, id, new Date(2026, 10, 16, 19, 0).toISOString());
+    setSessionDate(db, id, new Date(2026, 10, 14));
+    const s = getSessionDetail(db, id)!.session;
+    expect(new Date(s.startedAt).getDate()).toBe(14);
+    expect(new Date(s.startedAt).getHours()).toBe(18);
+    expect(Date.parse(s.finishedAt!) - Date.parse(s.startedAt)).toBe(60 * 60 * 1000);
   });
 });

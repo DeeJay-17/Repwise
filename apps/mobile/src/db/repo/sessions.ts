@@ -23,13 +23,21 @@ export interface SessionExercise {
 
 export interface SessionDetail {
   session: WorkoutSessionRow;
+  /** Position of the plan day this workout came from, for its colour. */
+  dayIndex: number | null;
   exercises: SessionExercise[];
 }
 
 export interface SessionSummary extends WorkoutSessionRow {
+  dayIndex: number | null;
   completedSets: number;
   /** Sum of reps x weight over completed sets, in kg. */
   volumeKg: number;
+}
+
+export interface LastPerformance {
+  startedAt: string;
+  sets: SetLogRow[];
 }
 
 /**
@@ -105,6 +113,7 @@ export function startSession(db: Db, planDayId: string, now = nowIso()): string 
             targetMinReps: pe.minReps,
             targetMaxReps: pe.maxReps,
             targetSeconds: pe.seconds,
+            targetRestSeconds: pe.restSeconds,
             completed: false,
             createdAt: now,
             updatedAt: now,
@@ -118,12 +127,13 @@ export function startSession(db: Db, planDayId: string, now = nowIso()): string 
 }
 
 export function getSessionDetail(db: Db, sessionId: string): SessionDetail | undefined {
-  const session = db
-    .select()
+  const row = db
+    .select({ session: workoutSessions, dayIndex: planDays.dayIndex })
     .from(workoutSessions)
+    .leftJoin(planDays, eq(workoutSessions.planDayId, planDays.id))
     .where(and(eq(workoutSessions.id, sessionId), isNull(workoutSessions.deletedAt)))
     .get();
-  if (!session) return undefined;
+  if (!row) return undefined;
   const rows = db
     .select()
     .from(setLogs)
@@ -131,13 +141,13 @@ export function getSessionDetail(db: Db, sessionId: string): SessionDetail | und
     .orderBy(asc(setLogs.exercisePosition), asc(setLogs.setNumber))
     .all();
   const exercises: SessionExercise[] = [];
-  for (const row of rows) {
+  for (const set of rows) {
     const current = exercises.at(-1);
-    if (current && current.position === row.exercisePosition) current.sets.push(row);
+    if (current && current.position === set.exercisePosition) current.sets.push(set);
     else
-      exercises.push({ exerciseId: row.exerciseId, position: row.exercisePosition, sets: [row] });
+      exercises.push({ exerciseId: set.exerciseId, position: set.exercisePosition, sets: [set] });
   }
-  return { session, exercises };
+  return { session: row.session, dayIndex: row.dayIndex, exercises };
 }
 
 export type SetPatch = Partial<Pick<SetLogRow, 'reps' | 'weightKg' | 'seconds' | 'completed'>>;
@@ -173,6 +183,7 @@ export function addSet(db: Db, sessionId: string, exercisePosition: number): str
       id,
       setNumber: last.setNumber + 1,
       reps: null,
+      weightKg: null,
       seconds: null,
       completed: false,
       createdAt: now,
@@ -197,7 +208,7 @@ export function finishSession(db: Db, sessionId: string, now = nowIso()): void {
   notifyChange();
 }
 
-/** Throw away an unfinished workout. */
+/** Delete a workout, finished or not. Soft delete, so sync can pass it on later. */
 export function discardSession(db: Db, sessionId: string): void {
   const now = nowIso();
   db.update(workoutSessions)
@@ -207,38 +218,43 @@ export function discardSession(db: Db, sessionId: string): void {
   notifyChange();
 }
 
-/** Finished workouts, newest first, with completed-set counts and volume. */
+/** Finished workouts, newest first, with their day colour, completed sets and volume. */
 export function listFinishedSessions(db: Db): SessionSummary[] {
   const sessions = db
-    .select()
+    .select({ session: workoutSessions, dayIndex: planDays.dayIndex })
     .from(workoutSessions)
+    .leftJoin(planDays, eq(workoutSessions.planDayId, planDays.id))
     .where(and(isNotNull(workoutSessions.finishedAt), isNull(workoutSessions.deletedAt)))
     .orderBy(desc(workoutSessions.startedAt))
     .all();
-  return sessions.map((s) => {
+  return sessions.map(({ session, dayIndex }) => {
     const done = db
       .select({ reps: setLogs.reps, weightKg: setLogs.weightKg })
       .from(setLogs)
       .where(
-        and(eq(setLogs.sessionId, s.id), eq(setLogs.completed, true), isNull(setLogs.deletedAt)),
+        and(
+          eq(setLogs.sessionId, session.id),
+          eq(setLogs.completed, true),
+          isNull(setLogs.deletedAt),
+        ),
       )
       .all();
     const volumeKg = done.reduce((sum, r) => sum + (r.reps ?? 0) * (r.weightKg ?? 0), 0);
-    return { ...s, completedSets: done.length, volumeKg };
+    return { ...session, dayIndex, completedSets: done.length, volumeKg };
   });
 }
 
 /**
  * Completed sets of this exercise from the most recent other finished workout, so the
- * logging screen can show "last time: 3 x 10 @ 20 kg".
+ * logging screen can show "Last: 20x10, 20x10 (Mon 9 Nov)" and prefill the next sets.
  */
 export function lastPerformance(
   db: Db,
   exerciseId: string,
   excludeSessionId?: string,
-): SetLogRow[] {
+): LastPerformance | undefined {
   const latest = db
-    .select({ sessionId: setLogs.sessionId })
+    .select({ sessionId: setLogs.sessionId, startedAt: workoutSessions.startedAt })
     .from(setLogs)
     .innerJoin(workoutSessions, eq(setLogs.sessionId, workoutSessions.id))
     .where(
@@ -253,8 +269,8 @@ export function lastPerformance(
     )
     .orderBy(desc(workoutSessions.finishedAt))
     .get();
-  if (!latest) return [];
-  return db
+  if (!latest) return undefined;
+  const sets = db
     .select()
     .from(setLogs)
     .where(
@@ -267,4 +283,29 @@ export function lastPerformance(
     )
     .orderBy(asc(setLogs.setNumber))
     .all();
+  return { startedAt: latest.startedAt, sets };
+}
+
+/** Move a workout to another day, keeping its time of day and duration. */
+export function setSessionDate(db: Db, sessionId: string, day: Date): void {
+  const session = db.select().from(workoutSessions).where(eq(workoutSessions.id, sessionId)).get();
+  if (!session) return;
+  const started = new Date(session.startedAt);
+  const moved = new Date(
+    day.getFullYear(),
+    day.getMonth(),
+    day.getDate(),
+    started.getHours(),
+    started.getMinutes(),
+    started.getSeconds(),
+  );
+  const shift = moved.getTime() - started.getTime();
+  const finishedAt = session.finishedAt
+    ? new Date(Date.parse(session.finishedAt) + shift).toISOString()
+    : null;
+  db.update(workoutSessions)
+    .set({ startedAt: moved.toISOString(), finishedAt, updatedAt: nowIso() })
+    .where(eq(workoutSessions.id, sessionId))
+    .run();
+  notifyChange();
 }
