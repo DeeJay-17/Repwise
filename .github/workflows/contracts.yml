@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
       - name: Schema is valid JSON Schema
         run: uvx check-jsonschema --check-metaschema packages/contracts/plan.schema.json
       - name: Examples match the schema
