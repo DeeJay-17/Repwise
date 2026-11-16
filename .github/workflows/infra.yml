@@ -1,0 +1,22 @@
+name: infra
+
+on:
+  pull_request:
+    paths: ["infra/**", ".github/workflows/infra.yml"]
+  push:
+    branches: [main]
+    paths: ["infra/**", ".github/workflows/infra.yml"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Bicep compiles and passes the linter
+        run: |
+          az bicep install
+          for f in infra/azure/*.bicep; do az bicep build --file "$f" --stdout > /dev/null; az bicep lint --file "$f"; done
+      - name: Shell scripts pass shellcheck
+        run: shellcheck infra/azure/*.sh
+      - name: Compose file is valid
+        run: cp .env.example .env && docker compose -f infra/docker-compose.yml --env-file .env config --quiet

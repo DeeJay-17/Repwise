@@ -9,7 +9,7 @@ The backend needs a low-cost host for two containers and a PostgreSQL database w
 
 ## Decision
 
-Deploy both services as containers on Azure Container Apps with scale to zero, and use Azure Database for PostgreSQL Flexible Server. Infrastructure is written as Bicep in `infra/azure`.
+Deploy both services as containers on Azure Container Apps with scale to zero, and use Azure Database for PostgreSQL Flexible Server. Infrastructure is written as Bicep in `infra/azure`, deployed by `deploy.sh` and then by GitHub Actions with OpenID Connect (no stored Azure credentials).
 
 ## Consequences
 
