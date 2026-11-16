@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
 
 import { db } from '@/db/client';
+import { maskKey, PROVIDERS, useAiSettings } from '@/features/ai/settings';
 import { useDbQuery } from '@/db/live';
 import { getProfile, updateProfile } from '@/db/repo/profile';
 import { GOAL_LABELS } from '@/domain/types';
@@ -19,12 +20,14 @@ const UNITS = [
 export default function SettingsScreen() {
   const c = useColors();
   const profile = useDbQuery(() => getProfile(db));
+  const [ai, reloadAi] = useAiSettings();
+  useFocusEffect(reloadAi);
   if (!profile) return null;
 
   const row = (
     title: string,
     detail: string,
-    href: '/settings/profile' | '/settings/equipment',
+    href: '/settings/profile' | '/settings/equipment' | '/settings/ai',
   ) => (
     <Card onPress={() => router.push(href)}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
@@ -50,6 +53,13 @@ export default function SettingsScreen() {
           ? 'Bodyweight only'
           : `${profile.equipmentIds.length} items`,
         '/settings/equipment',
+      )}
+      {row(
+        'AI plan generation',
+        ai
+          ? `${PROVIDERS.find((p) => p.value === ai.provider)?.label} · ${ai.model} · ${maskKey(ai.apiKey)}`
+          : 'Not set up. Add your own API key.',
+        '/settings/ai',
       )}
       <Card>
         <Field label="Weight unit">

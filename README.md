@@ -2,7 +2,7 @@
 
 A mobile app that drafts a workout plan from your goals, schedule and the equipment you actually have (nothing, a treadmill, a home gym or a full gym), then tracks your workouts. Use it as a guest with data on your phone, or sign in with Google to sync across devices. AI generation uses your own OpenAI, Google or Anthropic API key; without one, Repwise works as a manual tracker.
 
-> Status: Phase 2 (offline tracker). Onboarding, equipment catalogue, manual plans and workout logging work fully offline. AI generation arrives in Phase 3.
+> Status: Phase 3 (AI generation). Offline tracking plus AI plan generation and regeneration with the user's own OpenAI, Google or Anthropic key. Accounts and sync arrive in Phase 4.
 
 ## Layout
 

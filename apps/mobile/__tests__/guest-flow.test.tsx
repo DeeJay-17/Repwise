@@ -32,7 +32,7 @@ it('takes a guest from onboarding to a logged workout', async () => {
   await waitFor(() => expect(screen).toHavePathname('/today'));
 
   // Build a plan with two exercises on day 1
-  await fireEvent.press(screen.getByText('Build a plan'));
+  await fireEvent.press(screen.getByText('Build it myself'));
   await waitFor(() => expect(screen).toHavePathname('/plan/new'));
   await fireEvent.press(screen.getByText('Create plan'));
   await waitFor(() => expect(screen).toHavePathname('/plan'));

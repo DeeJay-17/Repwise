@@ -285,6 +285,8 @@ export function Input({
   keyboardType = 'default',
   style,
   accessibilityLabel,
+  secure,
+  autoCapitalize,
 }: {
   value: string;
   onChangeText: (text: string) => void;
@@ -293,6 +295,8 @@ export function Input({
   keyboardType?: 'default' | 'number-pad' | 'decimal-pad';
   style?: StyleProp<TextStyle>;
   accessibilityLabel?: string;
+  secure?: boolean;
+  autoCapitalize?: 'none' | 'sentences';
 }) {
   const c = useColors();
   return (
@@ -304,6 +308,9 @@ export function Input({
       placeholderTextColor={c.muted}
       keyboardType={keyboardType}
       accessibilityLabel={accessibilityLabel}
+      secureTextEntry={secure}
+      autoCapitalize={autoCapitalize}
+      autoCorrect={autoCapitalize === 'none' ? false : undefined}
       returnKeyType="done"
       style={[
         {

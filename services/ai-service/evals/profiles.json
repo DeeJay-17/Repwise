@@ -1,0 +1,514 @@
+{
+  "profiles": [
+    {
+      "name": "beginner_none_3d_general",
+      "profile": {
+        "goal": "general_fitness",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 30,
+        "limitations": [],
+        "equipmentIds": []
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "beginner_none_2d_fatloss",
+      "profile": {
+        "goal": "fat_loss",
+        "level": "beginner",
+        "daysPerWeek": 2,
+        "sessionMinutes": 20,
+        "limitations": [],
+        "equipmentIds": []
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "intermediate_none_5d_muscle",
+      "profile": {
+        "goal": "muscle_gain",
+        "level": "intermediate",
+        "daysPerWeek": 5,
+        "sessionMinutes": 45,
+        "limitations": [],
+        "equipmentIds": []
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "treadmill_3d_fatloss",
+      "profile": {
+        "goal": "fat_loss",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 45,
+        "limitations": [],
+        "equipmentIds": [
+          "treadmill"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "treadmill_4d_endurance",
+      "profile": {
+        "goal": "endurance",
+        "level": "intermediate",
+        "daysPerWeek": 4,
+        "sessionMinutes": 60,
+        "limitations": [],
+        "equipmentIds": [
+          "treadmill"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "treadmill_3d_general_knees",
+      "profile": {
+        "goal": "general_fitness",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 40,
+        "limitations": [
+          "knees"
+        ],
+        "equipmentIds": [
+          "treadmill"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "home_3d_muscle",
+      "profile": {
+        "goal": "muscle_gain",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 45,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "adjustable_bench",
+          "flat_bench",
+          "resistance_bands",
+          "pull_up_bar",
+          "kettlebell"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "home_4d_strength",
+      "profile": {
+        "goal": "strength",
+        "level": "intermediate",
+        "daysPerWeek": 4,
+        "sessionMinutes": 60,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "adjustable_bench",
+          "flat_bench",
+          "resistance_bands",
+          "pull_up_bar",
+          "kettlebell"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "home_2d_general_backpain",
+      "profile": {
+        "goal": "general_fitness",
+        "level": "beginner",
+        "daysPerWeek": 2,
+        "sessionMinutes": 30,
+        "limitations": [
+          "lower_back"
+        ],
+        "equipmentIds": [
+          "dumbbells",
+          "adjustable_bench",
+          "flat_bench",
+          "resistance_bands",
+          "pull_up_bar",
+          "kettlebell"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "home_5d_muscle_focus_arms",
+      "profile": {
+        "goal": "muscle_gain",
+        "level": "intermediate",
+        "daysPerWeek": 5,
+        "sessionMinutes": 60,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "adjustable_bench",
+          "flat_bench",
+          "resistance_bands",
+          "pull_up_bar",
+          "kettlebell"
+        ]
+      },
+      "focusMuscles": [
+        "biceps",
+        "triceps"
+      ]
+    },
+    {
+      "name": "full_4d_strength",
+      "profile": {
+        "goal": "strength",
+        "level": "advanced",
+        "daysPerWeek": 4,
+        "sessionMinutes": 75,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "full_5d_muscle",
+      "profile": {
+        "goal": "muscle_gain",
+        "level": "intermediate",
+        "daysPerWeek": 5,
+        "sessionMinutes": 60,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "full_6d_muscle_focus_glutes",
+      "profile": {
+        "goal": "muscle_gain",
+        "level": "advanced",
+        "daysPerWeek": 6,
+        "sessionMinutes": 75,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": [
+        "glutes"
+      ]
+    },
+    {
+      "name": "full_3d_fatloss",
+      "profile": {
+        "goal": "fat_loss",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 45,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "full_7d_endurance",
+      "profile": {
+        "goal": "endurance",
+        "level": "intermediate",
+        "daysPerWeek": 7,
+        "sessionMinutes": 30,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "full_1d_general",
+      "profile": {
+        "goal": "general_fitness",
+        "level": "beginner",
+        "daysPerWeek": 1,
+        "sessionMinutes": 60,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "full_4d_shoulder_issue",
+      "profile": {
+        "goal": "muscle_gain",
+        "level": "intermediate",
+        "daysPerWeek": 4,
+        "sessionMinutes": 60,
+        "limitations": [
+          "shoulders"
+        ],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "full_3d_wrists_nojump",
+      "profile": {
+        "goal": "general_fitness",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 45,
+        "limitations": [
+          "wrists",
+          "no_jumping"
+        ],
+        "equipmentIds": [
+          "dumbbells",
+          "barbell",
+          "ez_bar",
+          "kettlebell",
+          "resistance_bands",
+          "flat_bench",
+          "adjustable_bench",
+          "squat_rack",
+          "pull_up_bar",
+          "dip_bars",
+          "cable_machine",
+          "smith_machine",
+          "leg_press",
+          "hack_squat",
+          "leg_extension",
+          "leg_curl",
+          "chest_press_machine",
+          "shoulder_press_machine",
+          "pec_deck",
+          "calf_raise_machine",
+          "hip_machine",
+          "treadmill",
+          "stationary_bike",
+          "rowing_machine",
+          "elliptical",
+          "stair_climber"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "bands_only_3d_general",
+      "profile": {
+        "goal": "general_fitness",
+        "level": "beginner",
+        "daysPerWeek": 3,
+        "sessionMinutes": 30,
+        "limitations": [],
+        "equipmentIds": [
+          "resistance_bands"
+        ]
+      },
+      "focusMuscles": []
+    },
+    {
+      "name": "dumbbells_only_4d_fatloss_focus_chest",
+      "profile": {
+        "goal": "fat_loss",
+        "level": "intermediate",
+        "daysPerWeek": 4,
+        "sessionMinutes": 45,
+        "limitations": [],
+        "equipmentIds": [
+          "dumbbells"
+        ]
+      },
+      "focusMuscles": [
+        "chest"
+      ]
+    }
+  ]
+}

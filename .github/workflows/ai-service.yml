@@ -2,10 +2,10 @@ name: ai-service
 
 on:
   pull_request:
-    paths: ["services/ai-service/**", ".github/workflows/ai-service.yml", ".github/workflows/_python-service.yml"]
+    paths: ["services/ai-service/**", "packages/contracts/**", ".github/workflows/ai-service.yml", ".github/workflows/_python-service.yml"]
   push:
     branches: [main]
-    paths: ["services/ai-service/**", ".github/workflows/ai-service.yml", ".github/workflows/_python-service.yml"]
+    paths: ["services/ai-service/**", "packages/contracts/**", ".github/workflows/ai-service.yml", ".github/workflows/_python-service.yml"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

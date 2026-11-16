@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, isNull, ne } from 'drizzle-orm';
 
+import type { PlanDocument } from '@/domain/plan-document';
 import type { Goal, MuscleGroup, PlanSource, TargetKind } from '@/domain/types';
 import { newId } from '@/lib/id';
 import { nowIso } from '@/lib/time';
@@ -288,4 +289,72 @@ function renumber(db: Db, dayId: string, now: string): void {
         .run();
     }
   });
+}
+
+/**
+ * Save a plan received in the contract format (e.g. from the AI service) as a new, active
+ * plan. Rows get fresh local ids. Unknown exercise ids are skipped.
+ */
+export function importPlanDocument(
+  db: Db,
+  doc: PlanDocument,
+  isKnownExercise: (id: string) => boolean,
+): string {
+  const now = nowIso();
+  const planId = newId();
+  db.transaction((tx) => {
+    tx.update(plans).set({ isActive: false, updatedAt: now }).where(eq(plans.isActive, true)).run();
+    tx.insert(plans)
+      .values({
+        id: planId,
+        name: doc.name,
+        source: doc.source,
+        goal: doc.goal,
+        daysPerWeek: doc.daysPerWeek,
+        sessionMinutes: doc.sessionMinutes,
+        focusMuscles: doc.focusMuscles,
+        isActive: true,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .run();
+    for (const day of doc.days) {
+      const dayId = newId();
+      tx.insert(planDays)
+        .values({
+          id: dayId,
+          planId,
+          dayIndex: day.dayIndex,
+          name: day.name,
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+      let position = 0;
+      for (const e of [...day.exercises].sort((a, b) => a.order - b.order)) {
+        if (!isKnownExercise(e.exerciseId)) continue;
+        position += 1;
+        const t = e.target;
+        tx.insert(planExercises)
+          .values({
+            id: newId(),
+            planDayId: dayId,
+            exerciseId: e.exerciseId,
+            position,
+            sets: e.sets,
+            targetKind: t.kind,
+            minReps: t.kind === 'reps' ? t.minReps : null,
+            maxReps: t.kind === 'reps' ? t.maxReps : null,
+            seconds: t.kind === 'time' ? t.seconds : null,
+            restSeconds: e.restSeconds,
+            notes: e.notes ?? null,
+            createdAt: now,
+            updatedAt: now,
+          })
+          .run();
+      }
+    }
+  });
+  notifyChange();
+  return planId;
 }
