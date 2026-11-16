@@ -107,6 +107,8 @@ export const setLogs = sqliteTable(
     targetMinReps: integer('target_min_reps'),
     targetMaxReps: integer('target_max_reps'),
     targetSeconds: integer('target_seconds'),
+    /** Planned rest after each set, copied from the plan when the workout starts. */
+    targetRestSeconds: integer('target_rest_seconds'),
     reps: integer('reps'),
     weightKg: real('weight_kg'),
     seconds: integer('seconds'),

@@ -1,0 +1,1 @@
+ALTER TABLE `set_logs` ADD `target_rest_seconds` integer;

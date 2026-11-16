@@ -49,17 +49,29 @@ it('takes a guest from onboarding to a logged workout', async () => {
 
   // Log the workout: tick every set, which fills in the target reps
   await testRouter.navigate('/today');
-  await waitFor(() => expect(screen.getByText('Start workout')).toBeOnTheScreen());
-  await fireEvent.press(screen.getByText('Start workout'));
+  await waitFor(() => expect(screen.getByText('Start Day 1')).toBeOnTheScreen());
+  expect(screen.getByText(/0 \/ 3 sessions/)).toBeOnTheScreen();
+  await fireEvent.press(screen.getByText('Start Day 1'));
   await waitFor(() => expect(screen.getAllByLabelText(/Set \d done/)).toHaveLength(6));
+  expect(screen.getByText('0 of 6 sets')).toBeOnTheScreen();
   for (const box of screen.getAllByLabelText(/Set \d done/)) await fireEvent.press(box);
-  await fireEvent.press(screen.getByText('Finish workout (6/6)'));
+  expect(screen.getByText('6 of 6 sets')).toBeOnTheScreen();
+  expect(screen.getByText(/Rest · next/)).toBeOnTheScreen(); // rest timer started
+  await fireEvent.press(screen.getByText('Finish Day 1'));
 
-  // History shows the finished workout
-  await waitFor(() => expect(router.getPathname()).toMatch(/^\/history\//));
+  // Back on Today: a summary, the week strip counts it, and Day 2 is next
+  await waitFor(() => expect(router.getPathname()).toBe('/today'));
+  expect(screen.getByText(/Next up is Day 2/)).toBeOnTheScreen();
+  expect(screen.getByText(/1 \/ 3 sessions/)).toBeOnTheScreen();
+
+  // History: calendar, today's workout, and its detail
+  await testRouter.navigate('/history');
+  await waitFor(() => expect(screen.getByText('All workouts')).toBeOnTheScreen());
+  expect(screen.getByLabelText(/, 1 workouts$/)).toBeOnTheScreen();
+  const cards = screen.getAllByText('Day 1');
+  expect(cards).toHaveLength(2); // the selected day and the full list
+  await fireEvent.press(cards[0]!);
+  await waitFor(() => expect(screen.getByText('Delete workout')).toBeOnTheScreen());
   expect(screen.getByText('Dumbbell curl')).toBeOnTheScreen();
   expect(screen.getAllByText('12 reps, 12 reps, 12 reps')).toHaveLength(2);
-
-  await testRouter.navigate('/history');
-  await waitFor(() => expect(screen.getByText('6 sets · 0 min')).toBeOnTheScreen());
 });

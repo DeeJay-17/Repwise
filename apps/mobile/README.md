@@ -13,13 +13,15 @@ npm run check        # lint, format check, type check and tests (same as CI)
 - Onboarding: goal, experience, days per week, session length, areas to go easy on, equipment
 - Equipment picker with photos and presets (no equipment, treadmill only, home gym, full gym)
 - Manual plan builder: name a plan, fill each training day from exercises that fit your equipment, set sets, reps or time, and rest
-- Workout logging: start the next day in rotation, log weight and reps per set, see last time's numbers, add sets
-- History of finished workouts, and kg or lb display (stored in kg)
+- Today: this week's strip with a coloured plate per workout, day chips with the next day marked, a preview of each exercise with last time's numbers
+- Workout logging: last session's numbers as placeholders (tick an empty set to copy them), a rest timer on every tick, a heavier-weight hint once every set hits the top of the range, plates per side for barbell lifts, progress bar, editable date
+- History: month calendar with a plate per workout, tap a day to see it, totals and weeks that hit your target, delete a workout
+- kg or lb display (stored in kg)
 - AI plan generation and regeneration with focus muscles, using your own OpenAI, Google or Anthropic key (Settings → AI plan generation). The key stays in the phone's secure storage.
 
 ## AI service address
 
-The app calls the AI service at `extra.aiServiceUrl` in `app.json` (default `http://10.0.2.2:8002`, which is your computer as seen from the Android emulator). Override it with `EXPO_PUBLIC_AI_SERVICE_URL`, for example your computer's LAN address when testing on a phone. Run the service with `docker compose` or `uv run uvicorn` (see `services/ai-service`).
+In development the app calls the AI service on the same computer that serves the app (port 8002), so Expo Go on a phone over Wi-Fi works without setup. `EXPO_PUBLIC_AI_SERVICE_URL` overrides this; `extra.aiServiceUrl` in `app.json` is used outside development. Run the service with `docker compose` or `uv run uvicorn` (see `services/ai-service`).
 
 ## Layout
 
