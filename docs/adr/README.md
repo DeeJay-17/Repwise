@@ -9,5 +9,7 @@
 | [0005](0005-local-first-data.md) | Local-first data on the phone |
 | [0006](0006-user-provided-api-keys.md) | Users bring their own model API key in v1 |
 | [0007](0007-azure-container-apps.md) | Host on Azure Container Apps |
+| [0008](0008-bundled-exercise-catalogue.md) | Bundle a curated catalogue from free-exercise-db |
+| [0009](0009-drizzle-local-database.md) | Drizzle ORM on expo-sqlite for local data |
 
 New record: copy `0000-template.md` to the next number.

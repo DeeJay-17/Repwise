@@ -4,3 +4,8 @@ android
 ios
 coverage
 package-lock.json
+
+# Generated files
+drizzle
+assets/catalogue
+src/catalogue/images.generated.ts

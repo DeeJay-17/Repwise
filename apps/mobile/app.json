@@ -20,7 +20,7 @@
       "predictiveBackGestureEnabled": false,
       "package": "app.repwise.mobile"
     },
-    "plugins": ["expo-router"],
+    "plugins": ["expo-router", "expo-sqlite", "expo-image", "expo-font", "expo-asset"],
     "scheme": "repwise",
     "experiments": {
       "typedRoutes": true

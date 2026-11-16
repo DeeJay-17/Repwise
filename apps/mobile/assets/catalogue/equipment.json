@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "source": "https://github.com/yuhonas/free-exercise-db",
+  "license": "Unlicense (public domain)",
+  "equipment": [
+    {
+      "id": "dumbbells",
+      "name": "Dumbbells",
+      "category": "free_weights",
+      "imageExerciseId": "dumbbell_curl"
+    },
+    {
+      "id": "barbell",
+      "name": "Barbell and plates",
+      "category": "free_weights",
+      "imageExerciseId": "deadlift"
+    },
+    {
+      "id": "ez_bar",
+      "name": "EZ curl bar",
+      "category": "free_weights",
+      "imageExerciseId": "ez_bar_curl"
+    },
+    {
+      "id": "kettlebell",
+      "name": "Kettlebell",
+      "category": "free_weights",
+      "imageExerciseId": "kettlebell_swing"
+    },
+    {
+      "id": "resistance_bands",
+      "name": "Resistance bands",
+      "category": "free_weights",
+      "imageExerciseId": "band_pull_apart"
+    },
+    {
+      "id": "flat_bench",
+      "name": "Flat bench",
+      "category": "benches_racks",
+      "imageExerciseId": "dumbbell_bench_press"
+    },
+    {
+      "id": "adjustable_bench",
+      "name": "Adjustable bench",
+      "category": "benches_racks",
+      "imageExerciseId": "incline_dumbbell_press"
+    },
+    {
+      "id": "squat_rack",
+      "name": "Squat rack",
+      "category": "benches_racks",
+      "imageExerciseId": "back_squat"
+    },
+    {
+      "id": "pull_up_bar",
+      "name": "Pull-up bar",
+      "category": "benches_racks",
+      "imageExerciseId": "pull_up"
+    },
+    {
+      "id": "dip_bars",
+      "name": "Dip bars",
+      "category": "benches_racks",
+      "imageExerciseId": "dip"
+    },
+    {
+      "id": "cable_machine",
+      "name": "Cable machine",
+      "category": "machines",
+      "imageExerciseId": "cable_crossover"
+    },
+    {
+      "id": "smith_machine",
+      "name": "Smith machine",
+      "category": "machines",
+      "imageExerciseId": "smith_squat"
+    },
+    {
+      "id": "leg_press",
+      "name": "Leg press",
+      "category": "machines",
+      "imageExerciseId": "leg_press"
+    },
+    {
+      "id": "hack_squat",
+      "name": "Hack squat machine",
+      "category": "machines",
+      "imageExerciseId": "hack_squat"
+    },
+    {
+      "id": "leg_extension",
+      "name": "Leg extension machine",
+      "category": "machines",
+      "imageExerciseId": "leg_extension"
+    },
+    {
+      "id": "leg_curl",
+      "name": "Leg curl machine",
+      "category": "machines",
+      "imageExerciseId": "lying_leg_curl"
+    },
+    {
+      "id": "chest_press_machine",
+      "name": "Chest press machine",
+      "category": "machines",
+      "imageExerciseId": "machine_chest_press"
+    },
+    {
+      "id": "shoulder_press_machine",
+      "name": "Shoulder press machine",
+      "category": "machines",
+      "imageExerciseId": "machine_shoulder_press"
+    },
+    {
+      "id": "pec_deck",
+      "name": "Pec deck",
+      "category": "machines",
+      "imageExerciseId": "pec_deck"
+    },
+    {
+      "id": "calf_raise_machine",
+      "name": "Calf raise machine",
+      "category": "machines",
+      "imageExerciseId": "standing_calf_raise_machine"
+    },
+    {
+      "id": "hip_machine",
+      "name": "Hip abduction/adduction machine",
+      "category": "machines",
+      "imageExerciseId": "hip_abduction_machine"
+    },
+    {
+      "id": "treadmill",
+      "name": "Treadmill",
+      "category": "cardio",
+      "imageExerciseId": "treadmill_walk"
+    },
+    {
+      "id": "stationary_bike",
+      "name": "Stationary bike",
+      "category": "cardio",
+      "imageExerciseId": "stationary_bike"
+    },
+    {
+      "id": "rowing_machine",
+      "name": "Rowing machine",
+      "category": "cardio",
+      "imageExerciseId": "rowing_machine"
+    },
+    {
+      "id": "elliptical",
+      "name": "Elliptical trainer",
+      "category": "cardio",
+      "imageExerciseId": "elliptical"
+    },
+    {
+      "id": "stair_climber",
+      "name": "Stair climber",
+      "category": "cardio",
+      "imageExerciseId": "stair_climber"
+    },
+    {
+      "id": "jump_rope",
+      "name": "Jump rope",
+      "category": "cardio",
+      "imageExerciseId": "jump_rope"
+    }
+  ],
+  "presets": [
+    {
+      "id": "none",
+      "name": "No equipment",
+      "equipmentIds": []
+    },
+    {
+      "id": "treadmill_only",
+      "name": "Treadmill only",
+      "equipmentIds": [
+        "treadmill"
+      ]
+    },
+    {
+      "id": "home_gym",
+      "name": "Home gym",
+      "equipmentIds": [
+        "dumbbells",
+        "adjustable_bench",
+        "flat_bench",
+        "resistance_bands",
+        "pull_up_bar",
+        "kettlebell"
+      ]
+    },
+    {
+      "id": "full_gym",
+      "name": "Full gym",
+      "equipmentIds": [
+        "dumbbells",
+        "barbell",
+        "ez_bar",
+        "kettlebell",
+        "resistance_bands",
+        "flat_bench",
+        "adjustable_bench",
+        "squat_rack",
+        "pull_up_bar",
+        "dip_bars",
+        "cable_machine",
+        "smith_machine",
+        "leg_press",
+        "hack_squat",
+        "leg_extension",
+        "leg_curl",
+        "chest_press_machine",
+        "shoulder_press_machine",
+        "pec_deck",
+        "calf_raise_machine",
+        "hip_machine",
+        "treadmill",
+        "stationary_bike",
+        "rowing_machine",
+        "elliptical",
+        "stair_climber"
+      ]
+    }
+  ]
+}
