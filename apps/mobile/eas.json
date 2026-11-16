@@ -15,10 +15,20 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_CORE_API_URL": "https://repwise-core-api.wittyfield-be53c15b.koreacentral.azurecontainerapps.io",
+        "EXPO_PUBLIC_AI_SERVICE_URL": "https://repwise-ai-service.wittyfield-be53c15b.koreacentral.azurecontainerapps.io",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "258560964934-igh1kid8i56qgrdua55egkql57spflvv.apps.googleusercontent.com"
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_CORE_API_URL": "https://repwise-core-api.wittyfield-be53c15b.koreacentral.azurecontainerapps.io",
+        "EXPO_PUBLIC_AI_SERVICE_URL": "https://repwise-ai-service.wittyfield-be53c15b.koreacentral.azurecontainerapps.io",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "258560964934-igh1kid8i56qgrdua55egkql57spflvv.apps.googleusercontent.com"
+      }
     }
   }
 }
