@@ -1,4 +1,7 @@
 import type { PlanTree } from '@/db/repo/plans';
+import type { ProfileRow } from '@/db/schema';
+import type { AiSettings } from '@/features/ai/settings';
+import type { GenerateRequest } from '@/api/ai';
 
 import type { Goal, MuscleGroup, PlanSource } from './types';
 
@@ -59,5 +62,28 @@ export function toPlanDocument({ plan, days }: PlanTree): PlanDocument {
         })),
       })),
     createdAt: plan.createdAt,
+  };
+}
+
+/** Build the AI service request from the stored profile and the user's provider settings. */
+export function buildGenerateRequest(
+  profile: ProfileRow,
+  ai: AiSettings,
+  focusMuscles: MuscleGroup[],
+  previousPlan?: PlanDocument,
+): GenerateRequest {
+  return {
+    provider: ai.provider,
+    model: ai.model,
+    profile: {
+      goal: profile.goal,
+      level: profile.level,
+      daysPerWeek: profile.daysPerWeek,
+      sessionMinutes: profile.sessionMinutes,
+      limitations: profile.limitations,
+      equipmentIds: profile.equipmentIds,
+    },
+    focusMuscles,
+    ...(previousPlan ? { previousPlan } : {}),
   };
 }

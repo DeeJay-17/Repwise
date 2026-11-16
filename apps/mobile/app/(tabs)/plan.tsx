@@ -31,8 +31,21 @@ export default function PlanScreen() {
       <Screen>
         <EmptyState
           title="No plan yet"
-          body="Create a plan, then add exercises to each training day."
-          action={<Button title="Create plan" onPress={() => router.push('/plan/new')} />}
+          body="Generate one with AI, or create a plan and add exercises to each day."
+          action={
+            <View style={{ gap: space.sm }}>
+              <Button
+                title="Generate with AI"
+                icon="sparkles"
+                onPress={() => router.push('/plan/generate')}
+              />
+              <Button
+                title="Create plan"
+                variant="secondary"
+                onPress={() => router.push('/plan/new')}
+              />
+            </View>
+          }
         />
       </Screen>
     );
@@ -68,7 +81,12 @@ export default function PlanScreen() {
       ))}
 
       <Button
-        title="New plan"
+        title="Regenerate with AI"
+        icon="sparkles"
+        onPress={() => router.push({ pathname: '/plan/generate', params: { regenerate: '1' } })}
+      />
+      <Button
+        title="New empty plan"
         variant="secondary"
         icon="add"
         onPress={() => router.push('/plan/new')}

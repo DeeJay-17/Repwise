@@ -13,6 +13,7 @@
     "expo-image": "~58.0.18",
     "expo-linking": "~58.0.17",
     "expo-router": "~58.0.31",
+    "expo-secure-store": "~58.0.3",
     "expo-sqlite": "~58.0.17",
     "expo-status-bar": "~58.0.5",
     "react": "19.3.0",
@@ -50,7 +51,8 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm run test",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "api:generate": "npx --yes openapi-typescript@7 ../../packages/contracts/openapi/ai-service.json -o src/api/ai-service.generated.ts && prettier --write src/api/ai-service.generated.ts"
   },
   "private": true,
   "jest": {

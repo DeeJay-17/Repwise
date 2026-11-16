@@ -1,0 +1,639 @@
+{
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "GenerateRequest": {
+        "description": "Generate a new plan, or regenerate one when `previousPlan` is given.",
+        "properties": {
+          "focusMuscles": {
+            "default": [],
+            "items": {
+              "enum": [
+                "chest",
+                "back",
+                "shoulders",
+                "biceps",
+                "triceps",
+                "forearms",
+                "core",
+                "glutes",
+                "quadriceps",
+                "hamstrings",
+                "calves",
+                "full_body"
+              ],
+              "type": "string"
+            },
+            "title": "Focusmuscles",
+            "type": "array"
+          },
+          "model": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Model",
+            "type": "string"
+          },
+          "previousPlan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanDocument"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "profile": {
+            "$ref": "#/components/schemas/Profile"
+          },
+          "provider": {
+            "enum": [
+              "openai",
+              "google",
+              "anthropic"
+            ],
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "model",
+          "profile"
+        ],
+        "title": "GenerateRequest",
+        "type": "object"
+      },
+      "GenerateResponse": {
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/PlanDocument"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "plan",
+          "warnings"
+        ],
+        "title": "GenerateResponse",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "service": {
+            "title": "Service",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "service"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "PlanDay": {
+        "additionalProperties": false,
+        "properties": {
+          "dayIndex": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Dayindex",
+            "type": "integer"
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/PlannedExercise"
+            },
+            "maxItems": 15,
+            "minItems": 1,
+            "title": "Exercises",
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dayIndex",
+          "name",
+          "exercises"
+        ],
+        "title": "PlanDay",
+        "type": "object"
+      },
+      "PlanDocument": {
+        "additionalProperties": false,
+        "description": "A weekly plan in the shared contract format.",
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "title": "Createdat",
+            "type": "string"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/PlanDay"
+            },
+            "maxItems": 7,
+            "minItems": 1,
+            "title": "Days",
+            "type": "array"
+          },
+          "daysPerWeek": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Daysperweek",
+            "type": "integer"
+          },
+          "focusMuscles": {
+            "items": {
+              "enum": [
+                "chest",
+                "back",
+                "shoulders",
+                "biceps",
+                "triceps",
+                "forearms",
+                "core",
+                "glutes",
+                "quadriceps",
+                "hamstrings",
+                "calves",
+                "full_body"
+              ],
+              "type": "string"
+            },
+            "title": "Focusmuscles",
+            "type": "array"
+          },
+          "goal": {
+            "enum": [
+              "fat_loss",
+              "muscle_gain",
+              "strength",
+              "general_fitness",
+              "endurance"
+            ],
+            "title": "Goal",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "schemaVersion": {
+            "const": "1.0",
+            "default": "1.0",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "sessionMinutes": {
+            "maximum": 180.0,
+            "minimum": 10.0,
+            "title": "Sessionminutes",
+            "type": "integer"
+          },
+          "source": {
+            "enum": [
+              "ai",
+              "fallback",
+              "manual"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "source",
+          "goal",
+          "daysPerWeek",
+          "sessionMinutes",
+          "focusMuscles",
+          "days",
+          "createdAt"
+        ],
+        "title": "PlanDocument",
+        "type": "object"
+      },
+      "PlannedExercise": {
+        "additionalProperties": false,
+        "properties": {
+          "exerciseId": {
+            "title": "Exerciseid",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "order": {
+            "minimum": 1.0,
+            "title": "Order",
+            "type": "integer"
+          },
+          "restSeconds": {
+            "maximum": 600.0,
+            "minimum": 0.0,
+            "title": "Restseconds",
+            "type": "integer"
+          },
+          "sets": {
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Sets",
+            "type": "integer"
+          },
+          "target": {
+            "discriminator": {
+              "mapping": {
+                "reps": "#/components/schemas/RepTarget",
+                "time": "#/components/schemas/TimeTarget"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RepTarget"
+              },
+              {
+                "$ref": "#/components/schemas/TimeTarget"
+              }
+            ],
+            "title": "Target"
+          }
+        },
+        "required": [
+          "exerciseId",
+          "order",
+          "sets",
+          "target",
+          "restSeconds"
+        ],
+        "title": "PlannedExercise",
+        "type": "object"
+      },
+      "Profile": {
+        "properties": {
+          "daysPerWeek": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Daysperweek",
+            "type": "integer"
+          },
+          "equipmentIds": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Equipmentids",
+            "type": "array"
+          },
+          "goal": {
+            "enum": [
+              "fat_loss",
+              "muscle_gain",
+              "strength",
+              "general_fitness",
+              "endurance"
+            ],
+            "title": "Goal",
+            "type": "string"
+          },
+          "level": {
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "limitations": {
+            "default": [],
+            "items": {
+              "enum": [
+                "knees",
+                "lower_back",
+                "shoulders",
+                "wrists",
+                "no_jumping"
+              ],
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          },
+          "sessionMinutes": {
+            "maximum": 180.0,
+            "minimum": 10.0,
+            "title": "Sessionminutes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "goal",
+          "level",
+          "daysPerWeek",
+          "sessionMinutes"
+        ],
+        "title": "Profile",
+        "type": "object"
+      },
+      "RepTarget": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "reps",
+            "default": "reps",
+            "title": "Kind",
+            "type": "string"
+          },
+          "maxReps": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Maxreps",
+            "type": "integer"
+          },
+          "minReps": {
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Minreps",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "minReps",
+          "maxReps"
+        ],
+        "title": "RepTarget",
+        "type": "object"
+      },
+      "TimeTarget": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "time",
+            "default": "time",
+            "title": "Kind",
+            "type": "string"
+          },
+          "seconds": {
+            "maximum": 3600.0,
+            "minimum": 5.0,
+            "title": "Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "seconds"
+        ],
+        "title": "TimeTarget",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Repwise AI service",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/plans/generate": {
+      "post": {
+        "operationId": "generate_v1_plans_generate_post",
+        "parameters": [
+          {
+            "description": "The user's own provider API key. Used for this request only; never stored or logged.",
+            "in": "header",
+            "name": "X-LLM-API-Key",
+            "required": true,
+            "schema": {
+              "description": "The user's own provider API key. Used for this request only; never stored or logged.",
+              "minLength": 8,
+              "title": "X-Llm-Api-Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Gateway Timeout"
+          }
+        },
+        "summary": "Generate or regenerate a weekly plan with the caller's own model API key",
+        "tags": [
+          "plans"
+        ]
+      }
+    }
+  }
+}

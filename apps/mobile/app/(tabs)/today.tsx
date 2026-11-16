@@ -51,8 +51,21 @@ export default function TodayScreen() {
       <Screen>
         <EmptyState
           title="No plan yet"
-          body="Build a plan from exercises that fit your equipment. AI plan generation arrives soon."
-          action={<Button title="Build a plan" onPress={() => router.push('/plan/new')} />}
+          body="Let AI draft one for your goals and equipment, or build it yourself."
+          action={
+            <View style={{ gap: space.sm }}>
+              <Button
+                title="Generate with AI"
+                icon="sparkles"
+                onPress={() => router.push('/plan/generate')}
+              />
+              <Button
+                title="Build it myself"
+                variant="secondary"
+                onPress={() => router.push('/plan/new')}
+              />
+            </View>
+          }
         />
       </Screen>
     );

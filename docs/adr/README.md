@@ -11,5 +11,6 @@
 | [0007](0007-azure-container-apps.md) | Host on Azure Container Apps |
 | [0008](0008-bundled-exercise-catalogue.md) | Bundle a curated catalogue from free-exercise-db |
 | [0009](0009-drizzle-local-database.md) | Drizzle ORM on expo-sqlite for local data |
+| [0010](0010-plan-generation-workflow.md) | Plan generation: the model proposes, code checks, a rule-based plan backs it up |
 
 New record: copy `0000-template.md` to the next number.

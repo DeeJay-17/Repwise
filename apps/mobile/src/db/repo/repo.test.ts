@@ -11,6 +11,7 @@ import {
   deletePlan,
   getActivePlan,
   getPlanTree,
+  importPlanDocument,
   listDayExercises,
   movePlannedExercise,
   removePlannedExercise,
@@ -184,5 +185,83 @@ describe('workouts', () => {
     discardSession(db, second);
     expect(getInProgressSession(db)).toBeUndefined();
     expect(listFinishedSessions(db)).toHaveLength(1);
+  });
+});
+
+describe('importing a plan document', () => {
+  it('saves days and exercises in order, skipping unknown exercises, as the active plan', () => {
+    const db = createTestDb();
+    const existing = createPlan(db, {
+      name: 'Old',
+      goal: 'strength',
+      daysPerWeek: 2,
+      sessionMinutes: 45,
+    });
+    const id = importPlanDocument(
+      db,
+      {
+        schemaVersion: '1.0',
+        id: 'server-id',
+        name: 'AI plan',
+        source: 'ai',
+        goal: 'fat_loss',
+        daysPerWeek: 2,
+        sessionMinutes: 45,
+        focusMuscles: ['glutes'],
+        days: [
+          {
+            dayIndex: 1,
+            name: 'Full body A',
+            exercises: [
+              {
+                exerciseId: 'plank',
+                order: 2,
+                sets: 3,
+                target: { kind: 'time', seconds: 40 },
+                restSeconds: 45,
+              },
+              {
+                exerciseId: 'push_up',
+                order: 1,
+                sets: 3,
+                target: { kind: 'reps', minReps: 8, maxReps: 12 },
+                restSeconds: 60,
+              },
+              {
+                exerciseId: 'not_real',
+                order: 3,
+                sets: 3,
+                target: { kind: 'reps', minReps: 8, maxReps: 12 },
+                restSeconds: 60,
+              },
+            ],
+          },
+          {
+            dayIndex: 2,
+            name: 'Cardio',
+            exercises: [
+              {
+                exerciseId: 'treadmill_walk',
+                order: 1,
+                sets: 1,
+                target: { kind: 'time', seconds: 900 },
+                restSeconds: 0,
+              },
+            ],
+          },
+        ],
+        createdAt: '2026-11-16T10:00:00Z',
+      },
+      (exerciseId) => exerciseId !== 'not_real',
+    );
+    expect(id).not.toBe(existing);
+    expect(getActivePlan(db)!.id).toBe(id);
+    const tree = getPlanTree(db, id)!;
+    expect(tree.plan).toMatchObject({ source: 'ai', focusMuscles: ['glutes'] });
+    expect(tree.days[0]!.exercises.map((e) => [e.position, e.exerciseId, e.targetKind])).toEqual([
+      [1, 'push_up', 'reps'],
+      [2, 'plank', 'time'],
+    ]);
+    expect(tree.days[1]!.exercises[0]).toMatchObject({ seconds: 900, restSeconds: 0 });
   });
 });

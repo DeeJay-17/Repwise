@@ -5,9 +5,11 @@ import uuid
 from collections.abc import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
+from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
 
 from app.config import get_settings
-from app.routers import health
+from app.routers import health, plans
 
 REQUEST_ID_HEADER = "X-Request-ID"
 
@@ -40,7 +42,17 @@ def create_app() -> FastAPI:
         )
         return response
 
+    @app.exception_handler(HTTPException)
+    async def error_body(_: Request, exc: HTTPException) -> JSONResponse:
+        # Errors use {"code", "message"} (ErrorResponse) instead of FastAPI's {"detail"}.
+        if isinstance(exc.detail, dict):
+            return JSONResponse(exc.detail, status_code=exc.status_code)
+        return JSONResponse(
+            {"code": "error", "message": str(exc.detail)}, status_code=exc.status_code
+        )
+
     app.include_router(health.router)
+    app.include_router(plans.router)
     return app
 
 
