@@ -44,19 +44,35 @@ if [[ -n "$GOOGLE_CLIENT_IDS" ]] && ! grep -q '^GOOGLE_CLIENT_IDS=' "$STATE"; th
   printf 'GOOGLE_CLIENT_IDS=%s\n' "$GOOGLE_CLIENT_IDS" >> "$STATE"
 fi
 
+step "Checking region $LOCATION"
+# Some subscriptions (e.g. Azure for Students) only allow certain regions.
+ALLOWED="$(az policy assignment list \
+  --query "[?parameters.listOfAllowedLocations].parameters.listOfAllowedLocations.value[]" -o tsv)"
+if [[ -n "$ALLOWED" ]] && ! grep -qx "$LOCATION" <<<"$ALLOWED"; then
+  echo "Your subscription does not allow '$LOCATION'. Allowed regions:"
+  while read -r region; do echo "  $region"; done <<<"$ALLOWED"
+  echo "Re-run with one of them, e.g.  REPWISE_LOCATION=$(head -n1 <<<"$ALLOWED") $0"
+  exit 1
+fi
+echo "ok"
+
 step "Registering resource providers (first run only takes a minute)"
 for ns in Microsoft.App Microsoft.OperationalInsights Microsoft.ContainerRegistry \
           Microsoft.DBforPostgreSQL Microsoft.ManagedIdentity; do
   az provider register --namespace "$ns" --wait >/dev/null
 done
 
-step "Resource group $RG in $LOCATION"
-az group create --name "$RG" --location "$LOCATION" --output none
+step "Resource group $RG"
+if [[ "$(az group exists --name "$RG")" == "true" ]]; then
+  echo "Using existing $RG (resources go to $LOCATION)"
+else
+  az group create --name "$RG" --location "$LOCATION" --output none
+fi
 
 step "Shared resources (PostgreSQL takes 5 to 10 minutes the first time)"
 BASE="$(az deployment group create --resource-group "$RG" --name repwise-base \
   --template-file "$HERE/base.bicep" \
-  --parameters prefix="$PREFIX" postgresPassword="$POSTGRES_PASSWORD" \
+  --parameters prefix="$PREFIX" location="$LOCATION" postgresPassword="$POSTGRES_PASSWORD" \
   --query properties.outputs --output json)"
 out() { python3 -c "import json,sys; print(json.load(sys.stdin)['$1']['value'])" <<<"$BASE"; }
 REGISTRY="$(out registryName)"
@@ -84,7 +100,7 @@ step "Container apps"
 DATABASE_URL="postgresql+psycopg://$PG_ADMIN:$POSTGRES_PASSWORD@$PG_HOST:5432/repwise?sslmode=require"
 APPS="$(az deployment group create --resource-group "$RG" --name repwise-apps \
   --template-file "$HERE/apps.bicep" \
-  --parameters prefix="$PREFIX" environmentId="$ENV_ID" identityId="$IDENTITY_ID" \
+  --parameters prefix="$PREFIX" location="$LOCATION" environmentId="$ENV_ID" identityId="$IDENTITY_ID" \
     registryServer="$SERVER" coreApiImage="$SERVER/core-api:$TAG" \
     aiServiceImage="$SERVER/ai-service:$TAG" databaseUrl="$DATABASE_URL" \
     jwtSecret="$JWT_SECRET" googleClientIds="$GOOGLE_CLIENT_IDS" \
