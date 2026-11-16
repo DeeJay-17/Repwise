@@ -8,6 +8,8 @@
 #   REPWISE_RG              resource group            (default: repwise-rg)
 #   REPWISE_LOCATION        Azure region              (default: centralindia)
 #   REPWISE_PREFIX          name prefix               (default: repwise)
+#   REPWISE_PG_LOCATION     region for PostgreSQL     (default: same as REPWISE_LOCATION)
+#   REPWISE_PG_SKU          PostgreSQL size           (default: Standard_B1ms)
 #   REPWISE_GOOGLE_CLIENT_IDS  Google web client ID(s) for sign-in (comma-separated)
 #
 # Needs: Azure CLI, logged in (az login). Docker is only needed if your subscription
@@ -17,6 +19,8 @@ set -euo pipefail
 RG="${REPWISE_RG:-repwise-rg}"
 LOCATION="${REPWISE_LOCATION:-centralindia}"
 PREFIX="${REPWISE_PREFIX:-repwise}"
+PG_LOCATION="${REPWISE_PG_LOCATION:-$LOCATION}"
+PG_SKU="${REPWISE_PG_SKU:-Standard_B1ms}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
 STATE="$HERE/.deploy.env"   # generated secrets; git-ignored, keep it safe
@@ -44,19 +48,53 @@ if [[ -n "$GOOGLE_CLIENT_IDS" ]] && ! grep -q '^GOOGLE_CLIENT_IDS=' "$STATE"; th
   printf 'GOOGLE_CLIENT_IDS=%s\n' "$GOOGLE_CLIENT_IDS" >> "$STATE"
 fi
 
+step "Checking regions: apps in $LOCATION, PostgreSQL in $PG_LOCATION"
+# Some subscriptions (e.g. Azure for Students) only allow certain regions.
+ALLOWED="$(az policy assignment list \
+  --query "[?parameters.listOfAllowedLocations].parameters.listOfAllowedLocations.value[]" -o tsv)"
+for region in "$LOCATION" "$PG_LOCATION"; do
+  if [[ -n "$ALLOWED" ]] && ! grep -qx "$region" <<<"$ALLOWED"; then
+    echo "Your subscription does not allow '$region'. Allowed regions:"
+    while read -r r; do echo "  $r"; done <<<"$ALLOWED"
+    exit 1
+  fi
+done
+# The PostgreSQL size must be offered to this subscription in its region.
+# (Set REPWISE_SKIP_SKU_CHECK=1 to skip this check.)
+if [[ -z "${REPWISE_SKIP_SKU_CHECK:-}" ]] \
+  && ! az postgres flexible-server list-skus --location "$PG_LOCATION" -o json 2>/dev/null \
+    | grep -q "\"$PG_SKU\""; then
+  echo "$PG_SKU PostgreSQL is not offered in $PG_LOCATION for this subscription."
+  if [[ -n "$ALLOWED" ]]; then
+    echo "Regions where it is offered:"
+    while read -r r; do
+      az postgres flexible-server list-skus --location "$r" -o json 2>/dev/null \
+        | grep -q "\"$PG_SKU\"" && echo "  $r"
+    done <<<"$ALLOWED"
+  fi
+  echo "Re-run with REPWISE_PG_LOCATION=<one of those>."
+  exit 1
+fi
+echo "ok"
+
 step "Registering resource providers (first run only takes a minute)"
 for ns in Microsoft.App Microsoft.OperationalInsights Microsoft.ContainerRegistry \
           Microsoft.DBforPostgreSQL Microsoft.ManagedIdentity; do
   az provider register --namespace "$ns" --wait >/dev/null
 done
 
-step "Resource group $RG in $LOCATION"
-az group create --name "$RG" --location "$LOCATION" --output none
+step "Resource group $RG"
+if [[ "$(az group exists --name "$RG")" == "true" ]]; then
+  echo "Using existing $RG (resources go to $LOCATION)"
+else
+  az group create --name "$RG" --location "$LOCATION" --output none
+fi
 
 step "Shared resources (PostgreSQL takes 5 to 10 minutes the first time)"
 BASE="$(az deployment group create --resource-group "$RG" --name repwise-base \
   --template-file "$HERE/base.bicep" \
-  --parameters prefix="$PREFIX" postgresPassword="$POSTGRES_PASSWORD" \
+  --parameters prefix="$PREFIX" location="$LOCATION" postgresLocation="$PG_LOCATION" \
+    postgresSku="$PG_SKU" postgresPassword="$POSTGRES_PASSWORD" \
   --query properties.outputs --output json)"
 out() { python3 -c "import json,sys; print(json.load(sys.stdin)['$1']['value'])" <<<"$BASE"; }
 REGISTRY="$(out registryName)"
@@ -84,7 +122,7 @@ step "Container apps"
 DATABASE_URL="postgresql+psycopg://$PG_ADMIN:$POSTGRES_PASSWORD@$PG_HOST:5432/repwise?sslmode=require"
 APPS="$(az deployment group create --resource-group "$RG" --name repwise-apps \
   --template-file "$HERE/apps.bicep" \
-  --parameters prefix="$PREFIX" environmentId="$ENV_ID" identityId="$IDENTITY_ID" \
+  --parameters prefix="$PREFIX" location="$LOCATION" environmentId="$ENV_ID" identityId="$IDENTITY_ID" \
     registryServer="$SERVER" coreApiImage="$SERVER/core-api:$TAG" \
     aiServiceImage="$SERVER/ai-service:$TAG" databaseUrl="$DATABASE_URL" \
     jwtSecret="$JWT_SECRET" googleClientIds="$GOOGLE_CLIENT_IDS" \

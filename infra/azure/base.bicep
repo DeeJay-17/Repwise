@@ -15,6 +15,12 @@ param postgresPassword string
 
 param postgresAdmin string = 'repwiseadmin'
 
+@description('Region for PostgreSQL. Can differ from the apps when a subscription does not offer the SKU in their region.')
+param postgresLocation string = location
+
+@description('PostgreSQL compute size (Burstable tier).')
+param postgresSku string = 'Standard_B1ms'
+
 // Unique, stable suffix so globally unique names (registry, database) do not collide.
 var suffix = uniqueString(resourceGroup().id)
 var acrPullRoleId = subscriptionResourceId(
@@ -68,10 +74,11 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
 }
 
 resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
-  name: '${prefix}-pg-${suffix}'
-  location: location
+  // The region is part of the name, so moving the database creates a new server.
+  name: '${prefix}-pg-${uniqueString(resourceGroup().id, postgresLocation)}'
+  location: postgresLocation
   sku: {
-    name: 'Standard_B1ms'
+    name: postgresSku
     tier: 'Burstable'
   }
   properties: {

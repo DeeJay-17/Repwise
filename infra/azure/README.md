@@ -17,7 +17,7 @@ az login
 REPWISE_GOOGLE_CLIENT_IDS=<your Google web client ID> ./infra/azure/deploy.sh
 ```
 
-Takes about 15 minutes the first time, mostly PostgreSQL. Defaults: resource group `repwise-rg`, region `centralindia`; override with `REPWISE_RG` and `REPWISE_LOCATION`. Generated passwords are kept in `infra/azure/.deploy.env` (git-ignored); keep that file, later runs reuse it.
+Takes about 15 minutes the first time, mostly PostgreSQL. Defaults: resource group `repwise-rg`, region `centralindia`; override with `REPWISE_RG` and `REPWISE_LOCATION`. Subscriptions that restrict regions (such as Azure for Students) are checked first, and the script lists the regions you may use. If PostgreSQL's size is not offered in the apps' region, put the database elsewhere with `REPWISE_PG_LOCATION` (the script lists where it is offered). Generated passwords are kept in `infra/azure/.deploy.env` (git-ignored); keep that file, later runs reuse it.
 
 Images are built by Azure Container Registry Tasks, so Docker is not needed. Some free-trial subscriptions block those builds; the script then falls back to a local Docker build.
 
