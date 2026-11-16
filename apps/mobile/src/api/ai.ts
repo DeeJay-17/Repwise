@@ -1,4 +1,4 @@
-import Constants from 'expo-constants';
+import { errorFrom, serviceUrl } from './config';
 
 import type { components } from './ai-service.generated';
 
@@ -11,22 +11,9 @@ export type GenerateResult =
 
 const TIMEOUT_MS = 120_000;
 
-const AI_SERVICE_PORT = 8002;
-
-/**
- * Base URL of the AI service, in this order:
- * 1. EXPO_PUBLIC_AI_SERVICE_URL, if set.
- * 2. The computer the dev server runs on (only set in development builds and Expo Go),
- *    on port 8002. This works on a real phone over Wi-Fi with no configuration.
- * 3. app.json `extra.aiServiceUrl` (the deployed service, once there is one).
- */
+/** Base URL of the AI service (local port 8002 in development). See serviceUrl. */
 export function aiServiceUrl(): string {
-  const fromEnv = process.env.EXPO_PUBLIC_AI_SERVICE_URL;
-  if (fromEnv) return fromEnv.replace(/\/$/, '');
-  const devHost = Constants.expoConfig?.hostUri?.split(':')[0];
-  if (devHost) return `http://${devHost}:${AI_SERVICE_PORT}`;
-  const fromConfig = Constants.expoConfig?.extra?.aiServiceUrl as string | undefined;
-  return (fromConfig || `http://10.0.2.2:${AI_SERVICE_PORT}`).replace(/\/$/, '');
+  return serviceUrl(process.env.EXPO_PUBLIC_AI_SERVICE_URL, 'aiServiceUrl', 8002);
 }
 
 const FRIENDLY: Record<string, string> = {
@@ -44,15 +31,8 @@ export async function generatePlan(body: GenerateRequest, apiKey: string): Promi
       body: JSON.stringify(body),
       signal: controller.signal,
     });
-    const json: unknown = await response.json().catch(() => null);
-    if (response.ok) return { ok: true, data: json as GenerateResponse };
-    const err = json as { code?: string; message?: string } | null;
-    if (err?.code && err.message) return { ok: false, code: err.code, message: err.message };
-    return {
-      ok: false,
-      code: `http_${response.status}`,
-      message: `The AI service returned ${response.status}.`,
-    };
+    if (response.ok) return { ok: true, data: (await response.json()) as GenerateResponse };
+    return { ok: false, ...(await errorFrom(response)) };
   } catch (e) {
     const code = (e as Error).name === 'AbortError' ? 'timeout' : 'network';
     return { ok: false, code, message: FRIENDLY[code]! };

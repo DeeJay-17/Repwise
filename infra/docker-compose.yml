@@ -27,6 +27,8 @@ services:
     environment:
       CORE_API_DATABASE_URL: ${CORE_API_DATABASE_URL}
       CORE_API_LOG_LEVEL: ${CORE_API_LOG_LEVEL:-INFO}
+      CORE_API_JWT_SECRET: ${CORE_API_JWT_SECRET}
+      CORE_API_GOOGLE_CLIENT_IDS: ${CORE_API_GOOGLE_CLIENT_IDS}
     ports:
       - "8001:8000"
     depends_on:

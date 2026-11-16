@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 
 import { db } from '@/db/client';
+import { useAutoSync } from '@/sync/runner';
 import { T } from '@/ui/components';
 import { useColors } from '@/ui/theme';
 
@@ -33,6 +34,7 @@ export default function RootLayout() {
 
   return (
     <>
+      <AutoSync />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: c.card },
@@ -48,4 +50,10 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </>
   );
+}
+
+/** Syncs the signed-in account in the background. Renders nothing. */
+function AutoSync() {
+  useAutoSync();
+  return null;
 }

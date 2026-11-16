@@ -17,6 +17,7 @@ npm run check        # lint, format check, type check and tests (same as CI)
 - Workout logging: last session's numbers as placeholders (tick an empty set to copy them), a rest timer on every tick, a heavier-weight hint once every set hits the top of the range, plates per side for barbell lifts, progress bar, editable date
 - History: month calendar with a plate per workout, tap a day to see it, totals and weeks that hit your target, delete a workout
 - kg or lb display (stored in kg)
+- Guest mode, or Google sign-in with backup and sync across phones (Settings, or the first screen). Sign-in needs the development build; see `docs/setup-accounts.md`.
 - AI plan generation and regeneration with focus muscles, using your own OpenAI, Google or Anthropic key (Settings → AI plan generation). The key stays in the phone's secure storage.
 
 ## AI service address

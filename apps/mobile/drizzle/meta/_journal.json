@@ -15,6 +15,13 @@
       "when": 1794826748637,
       "tag": "0001_set_rest",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794827643284,
+      "tag": "0002_sync_state",
+      "breakpoints": true
     }
   ]
 }

@@ -19,7 +19,9 @@ it('takes a guest from onboarding to a logged workout', async () => {
   const router = await renderRouter('./app', { initialUrl: '/' });
   await waitFor(() => expect(screen).toHavePathname('/onboarding'));
 
-  // Onboarding
+  // Onboarding, as a guest
+  await fireEvent.press(screen.getByText('Continue as guest'));
+  await waitFor(() => expect(screen).toHavePathname('/onboarding/goal'));
   await fireEvent.press(screen.getByText('Build muscle'));
   await fireEvent.press(screen.getByText('Continue'));
   await waitFor(() => expect(screen).toHavePathname('/onboarding/schedule'));

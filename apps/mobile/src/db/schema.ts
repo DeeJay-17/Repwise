@@ -127,3 +127,9 @@ export type PlanDayRow = typeof planDays.$inferSelect;
 export type PlanExerciseRow = typeof planExercises.$inferSelect;
 export type WorkoutSessionRow = typeof workoutSessions.$inferSelect;
 export type SetLogRow = typeof setLogs.$inferSelect;
+
+/** Sync bookkeeping (cursor, last push time). Local only; never synced. */
+export const syncState = sqliteTable('sync_state', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+});

@@ -15,7 +15,8 @@ export default function OnboardingLayout() {
           contentStyle: { backgroundColor: c.background },
         }}
       >
-        <Stack.Screen name="index" options={{ title: 'Welcome' }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="goal" options={{ title: 'Your goal' }} />
         <Stack.Screen name="schedule" options={{ title: 'Your schedule' }} />
         <Stack.Screen name="limitations" options={{ title: 'Anything to avoid?' }} />
         <Stack.Screen name="equipment" options={{ title: 'Your equipment' }} />

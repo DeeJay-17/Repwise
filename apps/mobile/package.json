@@ -4,11 +4,13 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
+    "@react-native-google-signin/google-signin": "^17.0.0",
     "drizzle-orm": "^0.45.4",
     "expo": "~58.0.25",
     "expo-asset": "~58.0.21",
     "expo-constants": "~58.0.16",
     "expo-crypto": "~58.0.8",
+    "expo-dev-client": "~58.0.20",
     "expo-font": "~58.0.12",
     "expo-image": "~58.0.18",
     "expo-linking": "~58.0.17",
@@ -52,7 +54,7 @@
     "test": "jest",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm run test",
     "db:generate": "drizzle-kit generate",
-    "api:generate": "npx --yes openapi-typescript@7 ../../packages/contracts/openapi/ai-service.json -o src/api/ai-service.generated.ts && prettier --write src/api/ai-service.generated.ts"
+    "api:generate": "npx --yes openapi-typescript@7 ../../packages/contracts/openapi/ai-service.json -o src/api/ai-service.generated.ts && npx --yes openapi-typescript@7 ../../packages/contracts/openapi/core-api.json -o src/api/core-api.generated.ts && prettier --write src/api/*.generated.ts"
   },
   "private": true,
   "jest": {

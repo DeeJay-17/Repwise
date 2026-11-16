@@ -31,8 +31,8 @@ jobs:
         run: npm run format:check
       - name: Type check
         run: npm run typecheck
-      - name: API types match the AI service contract
-        run: npm run api:generate && git diff --exit-code src/api/ai-service.generated.ts
+      - name: API types match the service contracts
+        run: npm run api:generate && git diff --exit-code src/api/
       - name: Test
         run: npm test -- --ci
       - name: Bundle for Android

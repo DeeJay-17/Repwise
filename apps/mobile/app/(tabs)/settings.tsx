@@ -4,6 +4,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { View } from 'react-native';
 
 import { db } from '@/db/client';
+import { AccountCard } from '@/features/account/AccountCard';
 import { maskKey, PROVIDERS, useAiSettings } from '@/features/ai/settings';
 import { useDbQuery } from '@/db/live';
 import { getProfile, updateProfile } from '@/db/repo/profile';
@@ -42,6 +43,7 @@ export default function SettingsScreen() {
 
   return (
     <Screen>
+      <AccountCard />
       {row(
         'Goals and schedule',
         `${GOAL_LABELS[profile.goal]} · ${profile.daysPerWeek} days · ${profile.sessionMinutes} min`,
@@ -72,7 +74,8 @@ export default function SettingsScreen() {
       </Card>
       <T variant="small">
         Exercise photos and instructions from free-exercise-db (public domain). Repwise{' '}
-        {Constants.expoConfig?.version ?? ''}. Your data stays on this phone.
+        {Constants.expoConfig?.version ?? ''}. Guest data stays on this phone; signed-in data also
+        syncs to your account.
       </T>
     </Screen>
   );
