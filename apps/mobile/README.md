@@ -1,6 +1,6 @@
 # mobile
 
-The Repwise app for Android and iPhone: React Native with Expo (SDK 58), TypeScript and Expo Router. v1 is tested on Android.
+The Repwise app for Android and iPhone: React Native with Expo (SDK 58), TypeScript and Expo Router. v1 is tested on Android. Everything works offline; data lives in SQLite on the phone.
 
 ```bash
 npm install
@@ -8,11 +8,33 @@ npm start            # then press "a" for an Android emulator, or scan the QR co
 npm run check        # lint, format check, type check and tests (same as CI)
 ```
 
-| Path                | Holds                                             |
-| ------------------- | ------------------------------------------------- |
-| `app/`              | Screens; the file path is the route (Expo Router) |
-| `src/features/`     | Feature code used by screens                      |
-| `src/lib/`          | Small shared helpers, such as unit conversion     |
-| `assets/catalogue/` | Bundled equipment and exercise data               |
+## What works (Phase 2)
 
-Weights are stored in kilograms; pounds are a display option (`src/lib/units.ts`).
+- Onboarding: goal, experience, days per week, session length, areas to go easy on, equipment
+- Equipment picker with photos and presets (no equipment, treadmill only, home gym, full gym)
+- Manual plan builder: name a plan, fill each training day from exercises that fit your equipment, set sets, reps or time, and rest
+- Workout logging: start the next day in rotation, log weight and reps per set, see last time's numbers, add sets
+- History of finished workouts, and kg or lb display (stored in kg)
+
+## Layout
+
+| Path                | Holds                                                                   |
+| ------------------- | ----------------------------------------------------------------------- |
+| `app/`              | Screens; the file path is the route (Expo Router)                       |
+| `src/features/`     | Components shared by several screens (equipment picker, profile fields) |
+| `src/db/`           | Drizzle schema, repositories (`repo/`), change signal (`live.ts`)       |
+| `src/domain/`       | Types, formatting, and export to the shared plan contract               |
+| `src/catalogue/`    | Typed access to the bundled catalogue                                   |
+| `src/ui/`           | Theme and basic components                                              |
+| `drizzle/`          | Generated SQL migrations                                                |
+| `assets/catalogue/` | Generated equipment and exercise data and photos                        |
+| `__tests__/`        | End-to-end screen tests                                                 |
+
+## Common tasks
+
+| Task                              | Command                                                                                  |
+| --------------------------------- | ---------------------------------------------------------------------------------------- |
+| Change the database schema        | Edit `src/db/schema.ts`, then `npm run db:generate`                                      |
+| Add or change catalogue exercises | Edit the table in `scripts/build_catalogue.py`, then `uv run scripts/build_catalogue.py` |
+
+Exercise data and photos: [free-exercise-db](https://github.com/yuhonas/free-exercise-db), public domain. See `assets/catalogue/ATTRIBUTION.md`.

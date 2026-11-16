@@ -23,7 +23,7 @@
       "name": "Full body B",
       "exercises": [
         { "exerciseId": "treadmill_intervals", "order": 1, "sets": 6, "target": { "kind": "time", "seconds": 60 }, "restSeconds": 60 },
-        { "exerciseId": "reverse_lunge", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 10, "maxReps": 12 }, "restSeconds": 60 },
+        { "exerciseId": "walking_lunge", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 10, "maxReps": 12 }, "restSeconds": 60 },
         { "exerciseId": "glute_bridge", "order": 3, "sets": 3, "target": { "kind": "reps", "minReps": 12, "maxReps": 15 }, "restSeconds": 45 }
       ]
     },
@@ -32,7 +32,7 @@
       "name": "Full body C",
       "exercises": [
         { "exerciseId": "treadmill_incline_walk", "order": 1, "sets": 1, "target": { "kind": "time", "seconds": 900 }, "restSeconds": 60 },
-        { "exerciseId": "pike_push_up", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 6, "maxReps": 10 }, "restSeconds": 75 },
+        { "exerciseId": "decline_push_up", "order": 2, "sets": 3, "target": { "kind": "reps", "minReps": 6, "maxReps": 10 }, "restSeconds": 75 },
         { "exerciseId": "dead_bug", "order": 3, "sets": 3, "target": { "kind": "reps", "minReps": 10, "maxReps": 12 }, "restSeconds": 45 }
       ]
     }
